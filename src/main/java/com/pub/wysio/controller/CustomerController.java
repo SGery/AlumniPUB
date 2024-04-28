@@ -8,42 +8,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping
 public class CustomerController {
     @Autowired
-    private CustomerService service;
+    private CustomerService customerService;
 
-    @PostMapping("/addCustomer")
-    public Customer addCustomer(@RequestBody Customer customer) {
-        return service.saveCustomer(customer);
+    @PostMapping("/customer")
+    public Customer saveCustomer(@RequestBody Customer customer) {
+        return customerService.saveCustomer(customer);
     }
 
-    @PostMapping("/addCustomers")
-    public List<Customer> addCustomers(@RequestBody List<Customer> customers) {
-        return service.saveCustomers(customers);
-    }
-
-    @GetMapping("/customers")
+    @GetMapping("/allCustomers")
     public List<Customer> findAllCustomers() {
-        return service.getAllCustomers();
+        return customerService.getAllCustomers();
     }
 
-    @GetMapping("/customerById/{id}")
-    public Customer findCustomerById(@PathVariable int id) {
-        return service.getCustomerById(id);
+    @GetMapping("/customer/{id}")
+    public Customer findCustomerById(@PathVariable Integer id) {
+        return customerService.getCustomerById(id);
     }
 
-    @GetMapping("/customer/{nickname}")
-    public Customer findCustomerByNickname(@PathVariable String nickname) {
-        return service.getCustomerByNickname(nickname);
+    @PutMapping("/customer/{id}")
+    public Customer updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
+        return customerService.updateCustomer(id, customer);
     }
 
-    @PutMapping("/update")
-    public Customer updateCustomer(@RequestBody Customer customer) {
-        return service.updateCustomer(customer);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable int id) {
-        return service.deleteCustomerById(id);
+    @DeleteMapping("/customer/{id}")
+    public String deleteCustomer(@PathVariable Integer id) {
+        return customerService.deleteCustomerById(id);
     }
 }
