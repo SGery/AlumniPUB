@@ -1,5 +1,7 @@
 package com.pub.wysio.service;
 
+import com.pub.wysio.dto.CustomerConverter;
+import com.pub.wysio.dto.CustomerDTO;
 import com.pub.wysio.entity.Customer;
 import com.pub.wysio.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +12,24 @@ import java.util.List;
 @Service
 public class CustomerService {
     @Autowired
-    private CustomerRepository customerRepository;
+    CustomerRepository customerRepository;
+    @Autowired
+    CustomerConverter customerConverter;
 
-    public Customer saveCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerConverter.toEntity(customerDTO);
+        customerRepository.save(customer);
+
+        return customerConverter.toDto(customer);
     }
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> allCustomers = customerRepository.findAll();
+        return customerConverter.toDto(allCustomers);
     }
 
-    public Customer getCustomerById(Integer id) {
-        return customerRepository.findById(id).orElse(null);
+    public CustomerDTO getCustomerById(Integer id) {
+        Customer customerById = customerRepository.findById(id).orElse(null);
+        return customerById != null ? customerConverter.toDto(customerById) : null;
     }
 
     public String deleteCustomerById(Integer id) {
@@ -28,15 +37,14 @@ public class CustomerService {
         return "Customer with id: " + id + " removed.";
     }
 
-    public Customer updateCustomer(Integer id, Customer customer) {
-        Customer existingCustomer = customerRepository.findById(id).orElse(null);
-        if(existingCustomer == null){
+    public CustomerDTO updateCustomer(Integer id, CustomerDTO customerDTO) {
+        if(customerRepository.findById(id).orElse(null) == null){
             return null;
         }
+        Customer existingCustomer = customerConverter.toEntity(customerDTO);
+        existingCustomer.setId(id);
+        customerRepository.save(existingCustomer);
 
-        existingCustomer.setNickname(customer.getNickname());
-        existingCustomer.setLiverStrength(customer.getLiverStrength());
-        existingCustomer.setBicepSize(customer.getBicepSize());
-        return customerRepository.save(existingCustomer);
+        return customerConverter.toDto(existingCustomer);
     }
 }
