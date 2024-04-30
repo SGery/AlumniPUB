@@ -1,6 +1,7 @@
 package com.pub.wysio.controller;
 
-import com.pub.wysio.entity.Customer;
+import com.pub.wysio.dto.CustomerConverter;
+import com.pub.wysio.dto.CustomerDTO;
 import com.pub.wysio.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,26 +12,28 @@ import java.util.List;
 @RequestMapping("customer")
 public class CustomerController {
     @Autowired
-    private CustomerService customerService;
+    CustomerService customerService;
+    @Autowired
+    CustomerConverter customerConverter;
 
     @PostMapping
-    public Customer saveCustomer(@RequestBody Customer customer) {
-        return customerService.saveCustomer(customer);
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
+        return customerService.saveCustomer(customerDTO);
     }
 
     @GetMapping
-    public List<Customer> findAllCustomers() {
+    public List<CustomerDTO> findAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("{id}")
-    public Customer findCustomerById(@PathVariable Integer id) {
+    public CustomerDTO findCustomerById(@PathVariable Integer id) {
         return customerService.getCustomerById(id);
     }
 
     @PutMapping("{id}")
-    public Customer updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
-        return customerService.updateCustomer(id, customer);
+    public CustomerDTO updateCustomer(@PathVariable Integer id, @RequestBody CustomerDTO customerDTO) {
+        return customerService.updateCustomer(id, customerDTO);
     }
 
     @DeleteMapping("{id}")
